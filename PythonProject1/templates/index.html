@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SHYA Health Care</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #e0f7fa, #f1f8e9, #fff3e0);
+        background-attachment: fixed;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .logo {
+        width: 50px;
+        height: 50px;
+        margin-top: 0;
+        margin-left: 2px;
+      }
+      .myimg {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #00796b;
+        border-radius: 25px;
+      }
+      h1.gradient-title {
+        font-size: 48px;
+        font-weight: 900;
+        background: linear-gradient(90deg, #43a047, #0288d1, #ff7043, #7b1fa2);
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: 2px;
+        text-align: center;
+      }
+      .form-container {
+        background: linear-gradient(135deg, #81d4fa, #aed581);
+        color: white;
+        border-radius: 15px;
+        padding: 50px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+      .btn-custom {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 5px;
+        font-weight: bold;
+        background: linear-gradient(90deg, #ff7043, #ff8a65);
+        color: white;
+        border: none;
+      }
+      .btn-custom:hover {
+        opacity: 0.9;
+      }
+      .toggle-button {
+        padding: 6px;
+        margin: 5px 40px 5px 0;
+        font-size: 18px;
+        font-weight: bold;
+        width: 140px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        background: linear-gradient(90deg, #66bb6a, #43a047);
+      }
+      .toggle-button:hover {
+        opacity: 0.9;
+      }
+      .modal-header {
+        background: linear-gradient(90deg, #0288d1, #00796b);
+        color: white;
+      }
+      .modal-body {
+        background-color: #f9fbe7;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <div class="logo">
+          <img class="myimg" src="{{url_for('static',filename='SHYA.png')}}" alt="">
+        </div>
+        <a class="navbar-brand" href="#">SHYA Health Care</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link active" href="/index">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="/developer">Developer</a></li>
+            <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
+          </ul>
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <h1 class="gradient-title mt-4">SHYA HealthCare</h1>
+
+    <!-- Symptoms Form -->
+    <div class="container mt-4 my-4 form-container">
+      <form action="/predict" method="post">
+        <div class="form-group">
+          <label for="Symptoms">Type Symptoms</label>
+          <input type="text" class="form-control" name="symptoms" placeholder="Use symptoms like Itching, Vomiting">
+        </div><br>
+        <button class="btn btn-custom">Recommendations</button>
+      </form>
+    </div>
+
+    {% if predicted_disease %}
+    <h1 class="gradient-title" style="font-size:36px;">
+      S → Self-Care &nbsp; | &nbsp;
+      H → Healing &nbsp; | &nbsp;
+      Y → Youthful &nbsp; | &nbsp;
+      A → Affection
+    </h1>
+
+    <div class="container mt-3">
+      <div class="result-container" style="display:flex; justify-content:space-evenly; flex-wrap:wrap;">
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#diseaseModal">Disease</button>
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#descriptionModal">Description</button>
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#precautionModal">Precaution</button>
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#medicationModal">Medication</button>
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#workoutsModal">Workout</button>
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#dietsModal">Diets</button>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Modals (same structure, just with improved color classes) -->
+    <div class="modal fade" id="diseaseModal" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Predicted Disease</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body"><p>{{predicted_disease}}</p></div>
+      </div></div>
+    </div>
+
+    <div class="modal fade" id="descriptionModal" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Description</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body"><p>{{dis_des}}</p></div>
+      </div></div>
+    </div>
+
+    <div class="modal fade" id="precautionModal" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Precaution</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ul>{% for i in dis_pre %}<li>{{ i }}</li>{% endfor %}</ul>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="modal fade" id="medicationModal" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Medication</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ul>{% for i in dis_med %}<li>{{ i }}</li>{% endfor %}</ul>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="modal fade" id="workoutsModal" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Workout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ul>{% for i in dis_wrkout %}<li>{{ i }}</li>{% endfor %}</ul>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="modal fade" id="dietsModal" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Diets</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ul>{% for i in dis_diet %}<li>{{ i }}</li>{% endfor %}</ul>
+        </div>
+      </div></div>
+    </div>
+
+        </div> <!-- closing the last modal or container -->
+
+    <div class="container text-center my-4">
+      <img src="{{url_for('static',filename='QWERTY.png')}}"
+           class="end-img"
+           alt="Healthcare">
+      <p class="mt-2" style="color:#555; font-weight:bold;">Stay Healthy with SHYA HealthCare</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
